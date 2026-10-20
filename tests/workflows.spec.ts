@@ -45,7 +45,9 @@ test("all modules render and map navigation opens the selected zone", async ({
     "settings",
   ];
   for (const route of routes) {
-    await page.goto(`/#${route}`);
+    await page.goto(
+      `${["controls", "fire", "cameras"].includes(route) ? "/?console=1" : "/"}#${route}`,
+    );
     await expect(page.locator("main h1")).toBeVisible();
     expect(
       await page.evaluate(
@@ -57,16 +59,19 @@ test("all modules render and map navigation opens the selected zone", async ({
   await page
     .getByRole("button", { name: "Select Maple House", exact: true })
     .click();
+  const consolePromise = page.waitForEvent("popup");
   await page.getByRole("button", { name: "Open Maple House controls" }).click();
+  const consolePage = await consolePromise;
   await expect(page).toHaveURL(/#controls\/A2$/);
-  await expect(page.locator(".door-panel h2")).toHaveText("Maple House");
+  await expect(consolePage.locator(".door-panel h2")).toHaveText("Maple House");
+  await consolePage.close();
   expect(errors).toEqual([]);
 });
 
 test("door interlocks, timed release, held-open state and secure-all", async ({
   page,
 }) => {
-  await page.goto("/#controls");
+  await page.goto("/?console=1#controls");
   const entry = page
     .locator(".door-item")
     .filter({ hasText: "Cedar House entry" });
@@ -106,7 +111,7 @@ test("door interlocks, timed release, held-open state and secure-all", async ({
 test("fire events latch until acknowledged and restored; new events require acknowledgement", async ({
   page,
 }) => {
-  await page.goto("/#fire");
+  await page.goto("/?console=1#fire");
   const ack = page.getByRole("button", { name: /ACKNOWLEDGE Accept/ });
   const silence = page.getByRole("button", { name: /SIGNAL SILENCE/ });
   const reset = page.getByRole("button", { name: /SYSTEM RESET/ });
@@ -348,7 +353,7 @@ test("staff assignment and maintenance lifecycle are editable", async ({
 test("synthetic camera signal loss, restore and feed pause", async ({
   page,
 }) => {
-  await page.goto("/#cameras");
+  await page.goto("/?console=1#cameras");
   await page.getByRole("button", { name: "Pause feeds" }).click();
   await expect(
     page.getByRole("button", { name: "Resume feeds" }),
@@ -445,8 +450,13 @@ test("mobile navigation, floor plan and service pages fit the viewport", async (
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.getByRole("button", { name: "Open navigation" }).click();
+  const popupPromise = page.waitForEvent("popup");
   await page.getByRole("link", { name: "Fire & life safety" }).click();
-  await expect(page.locator("main h1")).toHaveText("Ready for the unexpected.");
+  const popup = await popupPromise;
+  await expect(popup.locator("main h1")).toHaveText(
+    "Ready for the unexpected.",
+  );
+  await popup.close();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -459,7 +469,9 @@ test("mobile navigation, floor plan and service pages fit the viewport", async (
     "services",
     "settings",
   ]) {
-    await page.goto(`/#${route}`);
+    await page.goto(
+      `${["controls", "fire", "cameras"].includes(route) ? "/?console=1" : "/"}#${route}`,
+    );
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

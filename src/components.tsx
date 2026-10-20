@@ -404,7 +404,7 @@ export function FacilityMap({
               height="18"
               patternUnits="userSpaceOnUse"
             >
-              <circle cx="1" cy="1" r="0.65" fill="#ccd4cb" />
+              <circle cx="1" cy="1" r="0.65" fill="var(--map-edge)" />
             </pattern>
             <pattern
               id="grass"
@@ -414,7 +414,7 @@ export function FacilityMap({
             >
               <path
                 d="M2 6l2-4 2 4"
-                stroke="#b1c5a2"
+                stroke="var(--map-edge)"
                 fill="none"
                 strokeWidth="0.55"
               />
@@ -430,18 +430,18 @@ export function FacilityMap({
           >
             <path
               d="M47 54H694V462H47Z"
-              fill="#f5f5ef"
-              stroke="#d9ded4"
+              fill="var(--map-bg)"
+              stroke="var(--map-edge)"
               strokeWidth="2"
             />
             <path
               d="M271 56v392M466 56v392M50 207h641M50 358h641"
-              stroke="#e1e5dc"
+              stroke="var(--surface-3)"
               strokeWidth="18"
             />
             <path
               d="M271 56v392M466 56v392M50 207h641M50 358h641"
-              stroke="#fafbf7"
+              stroke="var(--map-bg)"
               strokeWidth="13"
             />
             {zones.map((z) => {
@@ -475,9 +475,13 @@ export function FacilityMap({
                     width={z.w}
                     height={z.h}
                     rx="4"
-                    fill={activeAlarms ? "#f9dfd8" : z.color}
+                    fill={activeAlarms ? "#f0657c25" : "var(--map-floor)"}
                     stroke={
-                      picked ? "#367255" : activeAlarms ? "#c05c4b" : "#c8d3c3"
+                      picked
+                        ? "var(--accent)"
+                        : activeAlarms
+                          ? "#c05c4b"
+                          : "var(--map-edge)"
                     }
                     strokeWidth={picked ? 2.3 : 1.2}
                   />
@@ -491,14 +495,14 @@ export function FacilityMap({
                           width="27"
                           height="19"
                           rx="1"
-                          fill="#f4f7f0"
-                          stroke="#c4d1bd"
+                          fill="var(--map-room)"
+                          stroke="var(--map-edge)"
                           strokeWidth=".6"
                         />
                       ))}
                       <path
                         d={`M${z.x + 10} ${z.y + 94}h175`}
-                        stroke="#c6d1c0"
+                        stroke="var(--map-edge)"
                       />
                       <text x={z.x + 14} y={z.y + 83} className="map-small">
                         {residents} / {z.capacity} RESIDENTS
@@ -507,7 +511,7 @@ export function FacilityMap({
                         cx={z.x + 175}
                         cy={z.y + 80}
                         r="3"
-                        fill={unsecured ? "#c28c37" : "#5a8f65"}
+                        fill={unsecured ? "#c28c37" : "var(--accent)"}
                       />
                     </>
                   )}
@@ -543,15 +547,23 @@ export function FacilityMap({
                     width="20"
                     height="6"
                     rx="2"
-                    fill={unsecured ? "#d3a34b" : "#629878"}
-                    stroke="#f8faf5"
+                    fill={unsecured ? "#d3a34b" : "var(--accent)"}
+                    stroke="var(--map-bg)"
                     strokeWidth="1.5"
                   />
                 </g>
               );
             })}
-            <path d="M348 444h46v18h-46" fill="#f5f5ef" stroke="#d9ded4" />
-            <path d="M354 453h34m-5-4 5 4-5 4" fill="none" stroke="#78917d" />
+            <path
+              d="M348 444h46v18h-46"
+              fill="var(--map-bg)"
+              stroke="var(--map-edge)"
+            />
+            <path
+              d="M354 453h34m-5-4 5 4-5 4"
+              fill="none"
+              stroke="var(--accent)"
+            />
             <text x="370" y="480" textAnchor="middle" className="map-small">
               MAIN ENTRANCE
             </text>

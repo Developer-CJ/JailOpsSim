@@ -112,7 +112,7 @@ try {
   await page.getByLabel("Password", { exact: true }).fill(account.password);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await page.getByRole("heading", { name: "Facility overview." }).waitFor();
-  await page.goto(base + "/#controls");
+  await page.goto(base + "/?console=1#controls");
   const door = page
     .locator(".door-item")
     .filter({ hasText: "Cedar House entry" });
@@ -125,6 +125,19 @@ try {
     path: path.join(os.tmpdir(), "jailops-packaged-controls.png"),
     fullPage: true,
   });
+  await page.goto(base + "/?console=1#facility-view");
+  await page
+    .getByRole("img", { name: "Detailed interactive facility map" })
+    .waitFor();
+  assert.equal(await page.locator(".tactical-room").count(), 64);
+  assert.equal(await page.locator("html").getAttribute("data-theme"), "dark");
+  await page.goto(base + "/#accountability");
+  await page.getByRole("button", { name: "Start headcount" }).click();
+  await page.locator(".identity-check").first().getByRole("checkbox").click();
+  await page.waitForFunction(
+    () => document.querySelector(".identity-check input")?.checked === true,
+  );
+  assert.deepEqual(errors, []);
   await browser.close();
   browser = null;
   await stop();
@@ -158,8 +171,10 @@ try {
     snapshot.state.doors.find((d) => d.id === "A1-01").status,
     "Held open",
   );
+  assert.equal(snapshot.state.extension.headcounts[0].present.length, 1);
+  assert.equal(snapshot.state.extension.headcounts[0].expected.length, 12);
   console.log(
-    "Deployment ZIP verified: Windows x64 runtime, no preconfigured accounts, production-only dependencies, React sign-in and controls, SQLite persistence after restart, and consistent database backup. Native Windows startup tasks were not executed.",
+    "Deployment ZIP verified: Windows x64 runtime, no preconfigured accounts, production-only dependencies, React sign-in, dark theme, detailed facility map, controls, and headcount, SQLite persistence after restart, and consistent database backup. Native Windows startup tasks were not executed.",
   );
 } finally {
   if (browser) await browser.close();

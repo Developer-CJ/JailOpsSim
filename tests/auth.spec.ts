@@ -51,8 +51,8 @@ test("two browsers share committed door state and retain independent sessions", 
       data: testAdmin,
     });
     const other = await second.newPage();
-    await page.goto("/#controls");
-    await other.goto("http://127.0.0.1:4173/#controls");
+    await page.goto("/?console=1#controls");
+    await other.goto("http://127.0.0.1:4173/?console=1#controls");
     await page
       .locator(".door-item")
       .filter({ hasText: "Cedar House entry" })
@@ -64,6 +64,7 @@ test("two browsers share committed door state and retain independent sessions", 
         .filter({ hasText: "Cedar House entry" })
         .getByText("Held open", { exact: true }),
     ).toBeVisible({ timeout: 6000 });
+    await page.goto("/#overview");
     await page
       .getByRole("button", { name: `Sign out ${testAdmin.username}` })
       .click();

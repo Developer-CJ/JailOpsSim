@@ -183,6 +183,49 @@ export function Overview({
           trend={[20, 16, 18, 10, 13, 8, 9, 9]}
         />
       </div>
+      <div className="suite-console-dock" aria-label="Dedicated consoles">
+        {[
+          {
+            page: "facility-view" as const,
+            label: "Facility view",
+            text: "Rooms & live systems",
+            icon: Building2,
+            color: "blue",
+          },
+          {
+            page: "fire" as const,
+            label: "Fire panel",
+            text: `${state.alarms.length} panel events`,
+            icon: Flame,
+            color: "rose",
+          },
+          {
+            page: "controls" as const,
+            label: "Central control",
+            text: `${secured} / 18 doors secured`,
+            icon: DoorClosed,
+            color: "blue",
+          },
+          {
+            page: "cameras" as const,
+            label: "Camera workspace",
+            text: "9 synthetic training feeds",
+            icon: Video,
+            color: "violet",
+          },
+        ].map((c) => (
+          <button key={c.page} onClick={() => navigate(c.page)}>
+            <span className={`dock-icon ${c.color}`}>
+              <c.icon size={20} />
+            </span>
+            <span>
+              <strong>{c.label}</strong>
+              <small>{c.text}</small>
+            </span>
+            <ArrowUpRight size={14} />
+          </button>
+        ))}
+      </div>
       <div className="overview-grid">
         <Card className="map-card">
           <CardTitle

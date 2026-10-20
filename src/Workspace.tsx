@@ -206,7 +206,11 @@ export function Reports() {
                   <i
                     style={{
                       width: `${state.incidents.length ? (state.incidents.filter((v) => v.status === s).length / state.incidents.length) * 100 : 0}%`,
-                      background: ["#c5a257", "#8099b1", "#6d9375"][i],
+                      background: [
+                        "var(--amber)",
+                        "var(--violet)",
+                        "var(--accent)",
+                      ][i],
                     }}
                   />
                 </div>
@@ -619,7 +623,7 @@ export function Settings() {
         </div>
       </Card>
       <div className="workspace-footnote">
-        <span>JailOpsSim 2.0 · React + Node.js + SQLite</span>
+        <span>JailOpsSim 3.0 · React + Node.js + SQLite</span>
         <span>
           Signed in as {user.username} · {user.role}
         </span>

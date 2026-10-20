@@ -24,6 +24,16 @@ import {
   UsersRound,
   Video,
   Wrench,
+  Map,
+  ClipboardCheck,
+  Route,
+  Footprints,
+  Phone,
+  Thermometer,
+  KeyRound,
+  ClipboardList,
+  GraduationCap,
+  ExternalLink,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Badge, Button, Modal, SearchField } from "./components";
@@ -48,6 +58,25 @@ import { Cameras, FireSafety } from "./Safety";
 import { Reports, Settings } from "./Workspace";
 import { Admissions, CareServices } from "./Services";
 
+import {
+  Accountability,
+  Movements,
+  Rounds,
+  Communications,
+  Environment,
+  Assets,
+  Handover,
+  Drills,
+} from "./Expansion";
+import { TacticalFacility } from "./TacticalFacility";
+import {
+  ConsoleFrame,
+  ConsoleLauncher,
+  ThemeToggle,
+  consolePages,
+  openConsole,
+} from "./console";
+
 const navigation: {
   id: Page;
   label: string;
@@ -55,6 +84,71 @@ const navigation: {
   group: string;
   description: string;
 }[] = [
+  {
+    id: "facility-view",
+    label: "Facility view",
+    icon: Map,
+    group: "BUILDING SYSTEMS",
+    description:
+      "Detailed interactive facility with rooms, doors, cameras and live layers",
+  },
+  {
+    id: "accountability",
+    label: "Headcounts",
+    icon: ClipboardCheck,
+    group: "OPERATIONS",
+    description:
+      "Resident accountability, identity verification and count history",
+  },
+  {
+    id: "movements",
+    label: "Escorted movements",
+    icon: Route,
+    group: "OPERATIONS",
+    description: "Plan escorted movements and confirm arrivals",
+  },
+  {
+    id: "rounds",
+    label: "Patrol rounds",
+    icon: Footprints,
+    group: "OPERATIONS",
+    description: "Nine-zone patrol checkpoints and inspection notes",
+  },
+  {
+    id: "communications",
+    label: "Communications",
+    icon: Phone,
+    group: "BUILDING SYSTEMS",
+    description: "Intercom station calls and public address announcements",
+  },
+  {
+    id: "environment",
+    label: "Lighting & HVAC",
+    icon: Thermometer,
+    group: "BUILDING SYSTEMS",
+    description: "Zone lighting scenes, temperature and ventilation controls",
+  },
+  {
+    id: "assets",
+    label: "Keys & equipment",
+    icon: KeyRound,
+    group: "OPERATIONS",
+    description: "Asset custody, checkout and return",
+  },
+  {
+    id: "handover",
+    label: "Shift handover",
+    icon: ClipboardList,
+    group: "OPERATIONS",
+    description: "Shift notes, assigned follow-ups and completion history",
+  },
+  {
+    id: "drills",
+    label: "Guided training",
+    icon: GraduationCap,
+    group: "INSIGHTS",
+    description: "Guided drills with verified actions and completion scores",
+  },
   {
     id: "overview",
     label: "Overview",
@@ -185,6 +279,7 @@ function Clock() {
 export default function App() {
   const { state, connectionError, pending, user, logout } = useSimulation();
   const [route, setRoute] = useState(readRoute);
+  const isConsole = new URLSearchParams(window.location.search).has("console");
   const [mobile, setMobile] = useState(false);
   const [scenario, setScenario] = useState(false);
   const [incident, setIncident] = useState(false);
@@ -219,6 +314,7 @@ export default function App() {
     document.title = `${navigation.find((n) => n.id === route.page)?.label ?? "Settings"} — JailOpsSim`;
   }, [route.page]);
   const navigate = (page: Page, recordId?: string) => {
+    if (!isConsole && consolePages.includes(page)) openConsole(page, recordId);
     window.location.hash =
       page + (recordId ? `/${encodeURIComponent(recordId)}` : "");
     setSearch(false);
@@ -230,6 +326,33 @@ export default function App() {
     state.incidents.filter((i) => i.status === "Open").length;
   let content;
   switch (route.page) {
+    case "facility-view":
+      content = <TacticalFacility navigate={navigate} />;
+      break;
+    case "accountability":
+      content = <Accountability initialZone={route.recordId} />;
+      break;
+    case "movements":
+      content = <Movements />;
+      break;
+    case "rounds":
+      content = <Rounds />;
+      break;
+    case "communications":
+      content = <Communications />;
+      break;
+    case "environment":
+      content = <Environment />;
+      break;
+    case "assets":
+      content = <Assets />;
+      break;
+    case "handover":
+      content = <Handover />;
+      break;
+    case "drills":
+      content = <Drills />;
+      break;
     case "facilities":
       content = <Facilities navigate={navigate} />;
       break;
@@ -276,10 +399,10 @@ export default function App() {
       content = <Staffing />;
       break;
     case "fire":
-      content = <FireSafety />;
+      content = <FireSafety initialZone={route.recordId} />;
       break;
     case "cameras":
-      content = <Cameras />;
+      content = <Cameras initialZone={route.recordId} />;
       break;
     case "maintenance":
       content = <Maintenance />;
@@ -299,6 +422,30 @@ export default function App() {
         />
       );
   }
+  const module = navigation.find((n) => n.id === route.page);
+  if (isConsole)
+    return (
+      <ConsoleFrame page={route.page} title={module?.label ?? "Workspace"}>
+        {content}
+      </ConsoleFrame>
+    );
+  if (consolePages.includes(route.page))
+    content = (
+      <ConsoleLauncher
+        page={route.page}
+        title={module!.label}
+        description={module!.description}
+      >
+        <Badge tone="blue" dot>
+          Server connected
+        </Badge>
+        <Badge>{state.alarms.length} panel events</Badge>
+        <Badge>
+          {state.doors.filter((d) => d.status === "Secured").length} / 18 doors
+          secured
+        </Badge>
+      </ConsoleLauncher>
+    );
   return (
     <div className={`app ${state.settings.compact ? "compact" : ""}`}>
       <a
@@ -364,36 +511,45 @@ export default function App() {
           )}
         </div>
         <nav>
-          {["WORKSPACE", "BUILDING SYSTEMS", "INSIGHTS"].map((group) => (
-            <div className="nav-group" key={group}>
-              <div className="nav-label">{group}</div>
-              {navigation
-                .filter((n) => n.group === group)
-                .map((n) => (
-                  <a
-                    key={n.id}
-                    href={`#${n.id}`}
-                    className={`nav-item ${route.page === n.id ? "active" : ""}`}
-                    aria-current={route.page === n.id ? "page" : undefined}
-                    onClick={() => setMobile(false)}
-                  >
-                    <n.icon size={18} />
-                    <span>{n.label}</span>
-                    {n.id === "incidents" && (
-                      <span className="nav-count">
-                        {
-                          state.incidents.filter((i) => i.status !== "Resolved")
-                            .length
-                        }
-                      </span>
-                    )}
-                    {n.id === "fire" && state.alarms.length > 0 && (
-                      <span className="nav-alarm-dot" />
-                    )}
-                  </a>
-                ))}
-            </div>
-          ))}
+          {["WORKSPACE", "OPERATIONS", "BUILDING SYSTEMS", "INSIGHTS"].map(
+            (group) => (
+              <div className="nav-group" key={group}>
+                <div className="nav-label">{group}</div>
+                {navigation
+                  .filter((n) => n.group === group)
+                  .map((n) => (
+                    <a
+                      key={n.id}
+                      href={`#${n.id}`}
+                      className={`nav-item ${route.page === n.id ? "active" : ""}`}
+                      aria-current={route.page === n.id ? "page" : undefined}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(n.id);
+                      }}
+                    >
+                      <n.icon size={18} />
+                      <span>{n.label}</span>
+                      {consolePages.includes(n.id) && (
+                        <ExternalLink size={12} className="nav-external" />
+                      )}
+                      {n.id === "incidents" && (
+                        <span className="nav-count">
+                          {
+                            state.incidents.filter(
+                              (i) => i.status !== "Resolved",
+                            ).length
+                          }
+                        </span>
+                      )}
+                      {n.id === "fire" && state.alarms.length > 0 && (
+                        <span className="nav-alarm-dot" />
+                      )}
+                    </a>
+                  ))}
+              </div>
+            ),
+          )}
         </nav>
         <div className="sidebar-bottom">
           <button
@@ -436,7 +592,11 @@ export default function App() {
             </span>
             <span>
               <strong>{state.settings.operator}</strong>
-              <small>Workspace administrator</small>
+              <small>
+                {user.role === "admin"
+                  ? "Workspace administrator"
+                  : "Operations specialist"}
+              </small>
             </span>
             <ChevronDown size={14} />
           </button>
@@ -500,6 +660,7 @@ export default function App() {
             >
               ↪
             </button>
+            <ThemeToggle />
             <Clock />
           </div>
         </header>

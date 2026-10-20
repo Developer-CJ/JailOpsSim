@@ -1,3 +1,5 @@
+import { initialExpansion } from "./expansion.ts";
+import type { Expansion } from "./expansion.ts";
 export type Page =
   | "overview"
   | "facilities"
@@ -12,7 +14,16 @@ export type Page =
   | "staff"
   | "maintenance"
   | "reports"
-  | "settings";
+  | "settings"
+  | "facility-view"
+  | "accountability"
+  | "movements"
+  | "rounds"
+  | "communications"
+  | "environment"
+  | "assets"
+  | "handover"
+  | "drills";
 export type Tone = "green" | "amber" | "red" | "blue" | "neutral";
 export type Door = {
   id: string;
@@ -107,6 +118,7 @@ export type Appointment = {
 };
 export type Simulation = {
   version: 1;
+  extension: Expansion;
   doors: Door[];
   residents: Resident[];
   incidents: Incident[];
@@ -347,6 +359,7 @@ export function createInitialState(): Simulation {
   ]);
   return {
     version: 1,
+    extension: initialExpansion(),
     residents,
     doors,
     alarms: [],

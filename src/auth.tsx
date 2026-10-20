@@ -1,3 +1,4 @@
+import { ThemeToggle } from "./console";
 import { useState } from "react";
 import { Building2, LockKeyhole, ShieldCheck } from "lucide-react";
 
@@ -14,6 +15,9 @@ export function SignIn({
   const [error, setError] = useState("");
   return (
     <main className="auth-layout">
+      <div className="auth-theme">
+        <ThemeToggle />
+      </div>
       <section className="auth-intro">
         <span className="auth-logo">
           <Building2 size={29} />

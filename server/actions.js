@@ -1,3 +1,4 @@
+import { expansionSchemas, validateExpansion } from "./expansion-actions.js";
 import { z } from "zod";
 import { zones } from "../shared/model.ts";
 import { ApiError } from "./database.js";
@@ -25,6 +26,7 @@ const resident = z
   })
   .strict();
 const variants = [
+  ...expansionSchemas,
   z.object({
     type: z.literal("door"),
     id,
@@ -193,6 +195,7 @@ const nextId = (prefix, records, initial) =>
   `${prefix}-${Math.max(initial, ...records.map((v) => Number(v.id.split("-")[1]) || 0)) + 1}`;
 
 export function validateAction(s, a, user) {
+  validateExpansion(s, a);
   if (["reset", "settings"].includes(a.type) && user.role !== "admin")
     throw new ApiError(
       403,

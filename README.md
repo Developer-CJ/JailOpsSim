@@ -2,9 +2,19 @@
 
 A connected, fictional juvenile corrections operations suite. Explore a youth center, coordinate resident care, and practice realistic control-room workflows with generated sample data.
 
-Concept & design by CJ. Version 2 uses a React/TypeScript frontend, a Node.js/Express JavaScript backend, SQLite persistence, and authenticated shared workspaces. Fonts and production assets are bundled locally.
+Concept & design by CJ. Version 3 extends the complete version 2 baseline and uses a React/TypeScript frontend, a Node.js/Express JavaScript backend, SQLite persistence, and authenticated shared workspaces. Fonts and production assets are bundled locally.
 
 For the self-contained Windows deployment ZIP, follow [Windows Server deployment](docs/WINDOWS_SERVER.md). It includes the Windows x64 Node runtime, production dependencies, setup/startup/backup scripts, built frontend assets, backend, and complete source. The destination server does not need npm installation or a separate database service.
+
+## Version 3.0
+
+A blue dark-mode suite with 12 additions, including a detailed facility view, dedicated full-screen control windows, headcounts, escorted movements, patrol rounds, intercom, public address, lighting/HVAC, asset custody, shift handovers, and guided drills. Light mode is available from the sun/moon control. Existing modules and deployment capabilities are preserved.
+
+See [all version 3 features and workflows](docs/WHATS_NEW_V3.md) and the [preserved-baseline contract](docs/BASELINE.md).
+
+[Download Windows Server x64 v3.0.0](https://github.com/Developer-CJ/JailOpsSim/raw/refs/heads/deployment-download/JailOpsSim-Windows-x64-v3.0.0.zip).
+
+Selecting a control system from the main suite opens a dedicated window. Use its **Full screen** button for a monitor-filling console. Fire also includes **Focus panel**. If your browser blocks popups, use the same-window link on the console launcher.
 
 ## Run locally
 
@@ -63,7 +73,7 @@ npm test               # Build, backend tests, and authenticated browser workflo
 npm run format:check   # Formatting checks
 ```
 
-The 16 Playwright workflows cover sign-in/logout, independent sessions, shared changes between two browsers, every module, door timing/interlocks, fire-panel response, incidents, placement, programs, bookings, intake/discharge, staffing, maintenance, cameras, exports, preferences, search, reset confirmation, and mobile layouts. Four backend tests additionally verify authorization, CSRF/origin checks, validation, revision conflicts, SQLite/account persistence across restart, server timers without connected browsers, and server-side business rules. Tests use a separate temporary database and fixture-only accounts; deployment startup never creates test accounts.
+The 25 Playwright workflows cover the original suite plus themes, detached/full-screen consoles, the detailed facility map, headcounts, movement arrivals, patrol checkpoints, intercom, PA, environment controls, asset custody, handovers, and a complete guided fire drill. The original regression workflows cover sign-in/logout, independent sessions, shared changes between two browsers, every module, door timing/interlocks, fire-panel response, incidents, placement, programs, bookings, intake/discharge, staffing, maintenance, cameras, exports, preferences, search, reset confirmation, and mobile layouts. Ten backend tests verify the original protections plus v2 database migration, headcount invariants, movement transitions and discharge cleanup, patrol completion, intercom concurrency, asset custody, shared new-module persistence, and guided drill enforcement. The original backend checks verify authorization, CSRF/origin checks, validation, revision conflicts, SQLite/account persistence across restart, server timers without connected browsers, and server-side business rules. Tests use a separate temporary database and fixture-only accounts; deployment startup never creates test accounts.
 
 Chromium is already available at `/usr/bin/chromium` in this cloud environment. Playwright uses it automatically. On another machine, run `npx playwright install chromium` or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to an existing Chromium binary. No browser download is needed in the prepared cloud environment.
 
@@ -78,6 +88,12 @@ npm start
 
 - `server/*.js`: Express API, authentication, request validation, SQLite persistence, server timers, and account/backup CLI.
 - `shared/model.ts`: types, campus geometry, and sample data.
+- `shared/expansion.ts`: backward-compatible v3 module state, actions, and reducers.
+- `server/expansion-actions.js`: validation and connected workflow rules for v3.
+- `src/Expansion.tsx`: new operational workflows and communications/environment consoles.
+- `src/TacticalFacility.tsx`: detailed facility view and live device inspector.
+- `src/console.tsx`: independent windows, full screen, focus mode, and themes.
+- `src/palette.css`, `src/expansion.css`: theme-aware compatibility palette and blue interface.
 - `shared/simulation.ts`: shared domain actions and simulation rules. Node 24 executes these TypeScript modules using built-in type stripping.
 - `src/model.ts`: frontend re-export of the shared model.
 - `src/store.tsx`: authenticated API session, shared-state refresh, confirmed mutations, and optional alert tone.
@@ -95,7 +111,7 @@ npm start
 
 Shared records, preferences, accounts, sessions, and audit history are stored in `data/jailops.sqlite`. Passwords use salted scrypt hashes; session cookies are HTTP-only. State changes use revision checks and transactional writes. The application feed shows the latest 250 activity events; the server retains complete audit records with the signed-in actor, available through authenticated `GET /api/audit`. Administrators can reset the simulation without deleting accounts or the server audit.
 
-CSV and JSON exports are available in the application. JSON import is not implemented. For a complete, consistent database backup including accounts and audit, use `windows/Backup.ps1` or `node server/manage.js backup <destination.sqlite>`. Camera playback preferences and signal-loss illustrations remain temporary view state. Version 1 browser-local records are not automatically imported.
+CSV and JSON exports are available in the application. JSON import is not implemented. For a complete, consistent database backup including accounts and audit, use `windows/Backup.ps1` or `node server/manage.js backup <destination.sqlite>`. Camera playback preferences and signal-loss illustrations remain temporary view state. New operational records are persistent, while map layers, pan, zoom, and focused-panel view are temporary presentation preferences. Version 1 browser-local records are not automatically imported.
 
 API endpoints include `GET /api/health`, `GET /api/session`, `POST /api/login`, `POST /api/logout`, `GET /api/state`, `POST /api/actions`, and `GET /api/audit`. Mutations require an authenticated session, a CSRF token, and an `If-Match` workspace revision. Production serves both the API and compiled React application from the Node server.
 

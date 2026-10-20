@@ -94,6 +94,7 @@ try {
     "package.json",
     "package-lock.json",
     "README.md",
+    "AGENTS.md",
     "index.html",
     "vite.config.ts",
     "tsconfig.json",
@@ -160,7 +161,7 @@ try {
     JSON.stringify(
       {
         application: "JailOpsSim",
-        version: "2.0.0",
+        version: "3.0.0",
         platform: "Windows Server x64",
         node: nodeVersion,
         runtimeArchive: runtimeName,
@@ -181,7 +182,7 @@ try {
     ) + "\n",
   );
   await mkdir(outputDir, { recursive: true });
-  const filename = `JailOpsSim-Windows-x64-v2.0.0.zip`,
+  const filename = `JailOpsSim-Windows-x64-v3.0.0.zip`,
     destination = path.join(outputDir, filename);
   const archive = new ZipArchive({ zlib: { level: 9 } });
   const output = createWriteStream(destination);

@@ -86,7 +86,7 @@ export function createApplication(overrides = {}) {
   };
   app.get("/api/health", (_req, res) => {
     store.db.prepare("SELECT 1").get();
-    res.json({ status: "ok", service: "JailOpsSim", version: "2.0.0" });
+    res.json({ status: "ok", service: "JailOpsSim", version: "3.0.0" });
   });
   app.get("/api/session", (req, res) =>
     res.json({

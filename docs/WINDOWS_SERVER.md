@@ -1,5 +1,7 @@
 # Deploy JailOpsSim on Windows Server
 
+Version **3.0.0** retains the complete original suite and adds 12 features. See [what’s new](WHATS_NEW_V3.md) and the [baseline contract](BASELINE.md). Existing databases are upgraded in place without resetting records.
+
 This package contains a React frontend, a Node.js JavaScript backend, a SQLite database engine, production dependencies, the complete source, and a verified Node.js 24.19.0 **Windows x64** runtime. The server serves the React assets and authenticated `/api` endpoints together. It is not a standalone HTML file. No npm install, database server, compilation, or internet connection is needed on the destination server.
 
 Target a supported **Windows Server 2019, 2022, or 2025 x64** system. The deployment has been built and functionally tested in Linux; native Windows startup and Task Scheduler registration must be verified on the target Windows server.

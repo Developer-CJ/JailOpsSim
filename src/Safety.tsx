@@ -33,9 +33,13 @@ import type { Alarm } from "./model";
 import { useSimulation } from "./store";
 import { ActivityList } from "./Operations";
 
-export function FireSafety() {
+export function FireSafety({ initialZone }: { initialZone?: string }) {
   const { state, dispatch, notify } = useSimulation();
-  const [zone, setZone] = useState("EDU");
+  const [zone, setZone] = useState(
+    initialZone && zones.some((z) => z.id === initialZone)
+      ? initialZone
+      : "EDU",
+  );
   const [kind, setKind] = useState<Alarm["kind"]>("Fire alarm");
   const [lampTest, setLampTest] = useState(false);
   const [guide, setGuide] = useState(false);
@@ -471,10 +475,14 @@ const cameras = [
   { id: "CAM-09", name: "Control room entry", zone: "OPS", scene: "hall" },
 ];
 type Camera = (typeof cameras)[number];
-export function Cameras() {
+export function Cameras({ initialZone }: { initialZone?: string }) {
   const { dispatch, notify } = useSimulation();
   const [layout, setLayout] = useState(4);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState(
+    initialZone && zones.some((z) => z.id === initialZone)
+      ? initialZone
+      : "all",
+  );
   const [offline, setOffline] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [paused, setPaused] = useState(false);

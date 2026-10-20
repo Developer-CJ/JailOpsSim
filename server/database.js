@@ -8,6 +8,7 @@ import {
   timingSafeEqual,
   createHash,
 } from "node:crypto";
+import { initialExpansion } from "../shared/expansion.ts";
 import { createInitialState } from "../shared/model.ts";
 import { reduceSimulation } from "../shared/simulation.ts";
 
@@ -49,6 +50,18 @@ export function openDatabase(dataDir) {
   db.prepare(
     "INSERT OR IGNORE INTO workspace (id, revision, body) VALUES (1, 1, ?)",
   ).run(JSON.stringify(createInitialState()));
+
+  // Add new module state once without replacing any existing v2 record or preference.
+  const storedWorkspace = db
+    .prepare("SELECT body FROM workspace WHERE id = 1")
+    .get();
+  const storedState = JSON.parse(storedWorkspace.body);
+  if (!storedState.extension) {
+    storedState.extension = initialExpansion();
+    db.prepare(
+      "UPDATE workspace SET body = ?, revision = revision + 1 WHERE id = 1",
+    ).run(JSON.stringify(storedState));
+  }
 
   function snapshot() {
     const row = db

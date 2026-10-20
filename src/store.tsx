@@ -53,6 +53,7 @@ export function SimulationProvider({ children }: { children: ReactNode }) {
   const current = useRef(snapshot);
   const csrf = useRef<string | null>(null);
   const writing = useRef(false);
+  const syncChannel = useRef<BroadcastChannel | null>(null);
   const [pending, setPending] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [configured, setConfigured] = useState(true);
@@ -143,6 +144,28 @@ export function SimulationProvider({ children }: { children: ReactNode }) {
       clearInterval(timer);
     };
   }, [user, apply]);
+  useEffect(() => {
+    if (!user || typeof BroadcastChannel === "undefined") return;
+    let channel: BroadcastChannel;
+    try {
+      channel = new BroadcastChannel("jailops-workspace-v3");
+    } catch {
+      return;
+    } // Normal server polling remains available in restricted browsers.
+    syncChannel.current = channel;
+    channel.onmessage = (event) => {
+      const incoming = event.data as Snapshot;
+      if (
+        Number.isSafeInteger(incoming?.revision) &&
+        incoming.state?.version === 1
+      )
+        apply(incoming);
+    };
+    return () => {
+      syncChannel.current = null;
+      channel.close();
+    };
+  }, [user, apply]);
   const dispatch = useCallback(
     async (action: Action) => {
       if (writing.current) {
@@ -162,6 +185,11 @@ export function SimulationProvider({ children }: { children: ReactNode }) {
           body: JSON.stringify(action),
         });
         apply(data);
+        try {
+          syncChannel.current?.postMessage(data);
+        } catch {
+          /* A confirmed command stays successful if browser messaging is unavailable. */
+        }
         return true;
       } catch (err) {
         const error = err as Error & { status?: number };
@@ -224,6 +252,9 @@ export function SimulationProvider({ children }: { children: ReactNode }) {
     const t = setTimeout(() => setToast(null), 4500);
     return () => clearTimeout(t);
   }, [toast]);
+  useEffect(() => {
+    document.documentElement.dataset.syncRevision = String(snapshot.revision);
+  }, [snapshot.revision]);
   const audible =
     !!user &&
     snapshot.state.settings.sounds &&

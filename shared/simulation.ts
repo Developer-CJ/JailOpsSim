@@ -1,3 +1,5 @@
+import { reduceExpansion, expansionTypes } from "./expansion.ts";
+import type { ExpansionAction } from "./expansion.ts";
 import { createInitialState, zoneName } from "./model.ts";
 import type {
   Simulation,
@@ -12,6 +14,7 @@ import type {
 } from "./model.ts";
 
 export type Action =
+  | ExpansionAction
   | { type: "door"; id: string; mode: "release" | "secure" | "hold" }
   | { type: "expire"; ids: string[] }
   | { type: "secureAll" }
@@ -57,6 +60,8 @@ function addLog(
   };
 }
 export function reduceSimulation(s: Simulation, a: Action): Simulation {
+  if (expansionTypes.includes(a.type))
+    return reduceExpansion(s, a as ExpansionAction);
   switch (a.type) {
     case "door": {
       const door = s.doors.find((d) => d.id === a.id);
@@ -363,6 +368,23 @@ export function reduceSimulation(s: Simulation, a: Action): Simulation {
       return addLog(
         {
           ...s,
+          extension: {
+            ...s.extension,
+            locations: Object.fromEntries(
+              Object.entries(s.extension.locations).filter(
+                ([id]) => id !== a.id,
+              ),
+            ),
+            movements: s.extension.movements.map((m) =>
+              m.residentId === a.id && ["Queued", "En route"].includes(m.status)
+                ? {
+                    ...m,
+                    status: "Cancelled",
+                    updated: new Date().toISOString(),
+                  }
+                : m,
+            ),
+          },
           residents: s.residents.filter((v) => v.id !== a.id),
           discharged: [
             { ...r, dischargedAt: new Date().toISOString(), reason: a.reason },
@@ -413,4 +435,5 @@ export function reduceSimulation(s: Simulation, a: Action): Simulation {
         "system",
       );
   }
+  return s;
 }
