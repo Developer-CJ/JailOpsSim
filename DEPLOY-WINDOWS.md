@@ -1,8 +1,8 @@
 # Deploy JailOpsSim on Windows Server
 
-Version **3.0.0** retains the complete original suite and adds 12 features. See [what’s new](WHATS_NEW_V3.md) and the [baseline contract](BASELINE.md). Existing databases are upgraded in place without resetting records.
+Version **4.1.1** retains the complete v2/v3 suite and adds the guided custody workflow desk. See [what’s new](WHATS_NEW_V4.md) and the [baseline contract](BASELINE.md). Existing databases are upgraded in place without resetting records.
 
-This package contains a React frontend, a Node.js JavaScript backend, a SQLite database engine, production dependencies, the complete source, and a verified Node.js 24.19.0 **Windows x64** runtime. The server serves the React assets and authenticated `/api` endpoints together. It is not a standalone HTML file. No npm install, database server, compilation, or internet connection is needed on the destination server.
+This package contains a React frontend, a Node.js JavaScript backend, a SQLite database engine, production dependencies, the complete source, and a verified Node.js 24.19.0 **Windows x64** runtime. The server serves the React assets and authenticated `/api` endpoints together. It is not a standalone HTML file. No npm install, database server, compilation, or internet connection is needed to run the main application on the destination server. The optional WBF workstation bridge has separate Windows setup requirements in [device integration](DEVICE_INTEGRATION.md).
 
 Target a supported **Windows Server 2019, 2022, or 2025 x64** system. The deployment has been built and functionally tested in Linux; native Windows startup and Task Scheduler registration must be verified on the target Windows server.
 
@@ -86,11 +86,11 @@ Create a consistent database backup, including accounts and server audit history
 .\windows\Backup.ps1 -Destination C:\Backups\JailOpsSim-2026-10-19.sqlite
 ```
 
-The backup helper uses SQLite `VACUUM INTO`, so it can run while the application is active. Pick a new filename for each backup. Treat database backups as private server data. The JSON export in Settings is a simulation-data export; it does not contain accounts or the complete server audit.
+The backup helper uses SQLite `VACUUM INTO`, so it can run while the application is active. Pick a new filename for each backup. The helper also saves a `.reader-key` companion when the facility-card digest key exists. Preserve it with the database backup. Treat both files as private server data. The JSON export in Settings is a simulation-data export; it does not contain accounts or the complete server audit.
 
 For an upgrade, take a backup, stop the scheduled task, and replace the application files while retaining `.env` and the complete `data` directory. Run Install again to verify the deployment, then restart the task. Do not copy a running database file alone without its WAL; use the backup helper.
 
-To restore a backup, stop the server first, preserve the current complete data folder, replace `data\jailops.sqlite` with the consistent backup, and remove stale `jailops.sqlite-wal`/`jailops.sqlite-shm` files only after the server is stopped and the old data is preserved. Start the server and verify sign-in and records.
+To restore a backup, stop the server first, preserve the current complete data folder, replace `data\jailops.sqlite` with the consistent backup, and remove stale `jailops.sqlite-wal`/`jailops.sqlite-shm` files only after the server is stopped and the old data is preserved. Restore the `.reader-key` companion to `data\reader-key` when present. Start the server and verify sign-in, records, and facility-card lookups.
 
 ## What runs where
 

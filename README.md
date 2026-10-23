@@ -1,6 +1,32 @@
-# JailOpsSim — Windows Server downloads
+# JailOps — Windows x64 downloads
 
-## Latest: version 3.0.0
+## Current: v4.1.1
+
+[**Download JailOps v4.1.1 for Windows x64 (99.2 MB)**](https://github.com/Developer-CJ/JailOpsSim/raw/refs/heads/deployment-download/JailOps-Windows-x64-v4.1.1.zip)
+
+A redesigned React + Node.js suite with local SQLite, a focused workflow desk, and guided intake, medication pass, custody handoff, and release interviews. Saved drafts, conditional holds, identity checks, review attestations, and closed encounter records connect with the existing resident and movement modules. The complete v2/v3 module baseline remains available.
+
+- **U.are.U 4500:** preserves the WBF driver; includes a self-contained Windows x64 .NET 10 staff fingerprint bridge and its source. It verifies the enrolled Windows staff user; resident identity is separately attested. Physical Windows reader operation still needs workstation validation.
+- **MSR213U-12AUBNR:** facility-card enrollment, keyed digests, revocation, and selected-resident matching when configured for keyboard output. Exact reader configuration needs physical verification.
+- **Version notation:** `4.<build>.<storage>`; 0 = no database, 1 = SQLite, 9 = CJIT-SHARED. This release is build 1, SQLite storage 1.
+
+[What’s new](WHATS_NEW_V4.md) · [Windows deployment](DEPLOY-WINDOWS.md) · [Device setup](DEVICE_INTEGRATION.md) · [Version sequence](VERSIONING.md)
+
+Extract the complete ZIP and run **Install.cmd**, then **Start.cmd**. Application source, React assets, Node API, production dependencies, Windows Node runtime, and the optional WBF workstation executable are included. For an upgrade, back up first and retain `.env` and the entire `data` folder, including `reader-key`. The archive has no live accounts, private configuration, or database files.
+
+**Verified:** 30 browser workflows, 15 backend integration tests, formatting, extracted package sign-in and SQLite persistence/backup checks, WBF bridge compilation and Windows x64 cross-publication, and bridge HTTP origin/binding/replay smoke checks. Native Windows Task Scheduler and physical USB verification were not executed. Building controls and generated feeds remain demonstration sources. The suite is an evaluation build, not a validated clinical/custodial deployment.
+
+SHA-256: `d4f79a30cd24fff30b995c14ac5d5f4d6d90527aecbc3176a0eefbe3c8e0c450`
+
+![JailOps v4 workflow desk](screenshots/v4-workflow-desk.png)
+
+![Guided intake interview](screenshots/v4-intake-interview.png)
+
+---
+
+# Previous Windows releases
+
+## Version 3.0.0
 
 [**Download JailOpsSim v3.0.0 for Windows Server x64 (52.7 MB)**](https://github.com/Developer-CJ/JailOpsSim/raw/refs/heads/deployment-download/JailOpsSim-Windows-x64-v3.0.0.zip)
 
