@@ -1,6 +1,6 @@
 # Deploy JailOpsSim on Windows Server
 
-Version **4.1.1** retains the complete v2/v3 suite and adds the guided custody workflow desk. See [what’s new](WHATS_NEW_V4.md) and the [baseline contract](BASELINE.md). Existing databases are upgraded in place without resetting records.
+Version **4.2.1** retains the complete v2/v3 suite and adds the guided custody workflow desk. See [what’s new](WHATS_NEW_V4_2.md) and the [baseline contract](BASELINE.md). Existing databases are upgraded in place without resetting records.
 
 This package contains a React frontend, a Node.js JavaScript backend, a SQLite database engine, production dependencies, the complete source, and a verified Node.js 24.19.0 **Windows x64** runtime. The server serves the React assets and authenticated `/api` endpoints together. It is not a standalone HTML file. No npm install, database server, compilation, or internet connection is needed to run the main application on the destination server. The optional WBF workstation bridge has separate Windows setup requirements in [device integration](DEVICE_INTEGRATION.md).
 

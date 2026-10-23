@@ -1,6 +1,39 @@
-# JailOps — Windows x64 downloads
+# JailOps 4.2.1 — interactive custody workspace
 
-## Current: v4.1.1
+[**Watch the 22-second workflow walkthrough**](https://raw.githubusercontent.com/Developer-CJ/JailOpsSim/deployment-download/previews/JailOps-v4.2.1-workflow-preview.mp4) · [**Full feature guide**](WHATS_NEW_V4_2.md)
+
+The preview records the real application using isolated fictional fixtures: resident dossier → custody timeline → medication verification checklist → held encounter → visual intake placement → pathway board.
+
+## What changed
+
+- Searchable resident workbench with synchronized house filters, person dossiers, timeline/order tabs, and linked pathway launchers.
+- Paused / in progress / recorded pathway board with search, filters, and direct resume.
+- Visual room selection with occupied rooms disabled; server occupancy checks remain authoritative.
+- Medication-round queue with current orders and distinct Given/Refused/Held/Omitted encounter outcomes.
+- Individual medication/release checks, expanded focus mode, editable review steps, safe re-verification after upstream edits, and partial-answer saving.
+- Closed encounter receipts with JSON export, print layout, and historical resident snapshots.
+
+![Resident custody record](screenshots/v42-custody-record.png)
+
+![Interactive placement](screenshots/v42-placement.png)
+
+![Connected pathway board](screenshots/v42-pathway-board.png)
+
+## Windows deployment
+
+[Download the full Windows x64 suite v4.2.1 (100.1 MB)](https://github.com/Developer-CJ/JailOpsSim/raw/refs/heads/deployment-download/JailOps-Windows-x64-v4.2.1.zip)
+
+Includes React assets, Node/Express backend, SQLite engine, production dependencies, Windows Node runtime, complete source, Windows deployment scripts, and the portable WBF staff-verification executable. The U.are.U 4500 keeps its WBF driver; resident fingerprint matching is separate. MSR facility identifiers require keyboard output and enrollment. [Device setup](DEVICE_INTEGRATION.md) · [Windows guide](DEPLOY-WINDOWS.md) · [Version notation](VERSIONING.md).
+
+**Verified:** 36 browser tests, 17 backend integration tests, formatting, portable Windows bridge compilation, and extracted ZIP startup/persistence/backup checks on Linux. Physical USB verification and native Windows scheduled tasks still require target-machine testing. Existing v2/v3 modules, v4.1.1 records, and accounts are preserved. Upgrade while retaining `.env` and the complete `data` folder. Building controls and generated feeds remain demonstration sources.
+
+SHA-256: `b2009f0971d4e2867a318bd57693e0adda3ff778e3514e5a32afd6fda34ed68f`
+
+---
+
+# Earlier releases
+
+## Version 4.1.1
 
 [**Download JailOps v4.1.1 for Windows x64 (99.2 MB)**](https://github.com/Developer-CJ/JailOpsSim/raw/refs/heads/deployment-download/JailOps-Windows-x64-v4.1.1.zip)
 
