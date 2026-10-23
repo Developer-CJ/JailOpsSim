@@ -4,6 +4,8 @@
 
 The preview records the real application using isolated fictional fixtures: resident dossier → custody timeline → medication verification checklist → held encounter → visual intake placement → pathway board.
 
+![Recorded workflow preview](previews/JailOps-v4.2.1-workflow-preview.gif)
+
 ## What changed
 
 - Searchable resident workbench with synchronized house filters, person dossiers, timeline/order tabs, and linked pathway launchers.
