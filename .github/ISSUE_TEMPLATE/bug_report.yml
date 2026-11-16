@@ -1,0 +1,42 @@
+name: Bug report
+description: Report a reproducible problem in JailOpsSim.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: Use fictional training data. Remove passwords, tokens, real personal information, and production database contents from reports and screenshots.
+  - type: input
+    id: version
+    attributes:
+      label: Version and environment
+      description: Include the JailOpsSim version, operating system, browser, and whether this is a local or Windows Server deployment.
+      placeholder: "Version ..., Windows 11, Chrome ..., local development"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Give the steps from a known starting point, including the module involved.
+      placeholder: "1. Sign in as an operator\n2. Open ...\n3. Select ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happens instead? Include the exact error message if available.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or other context
+      description: Add relevant screenshots or sanitized error details. Do not upload a production database.
